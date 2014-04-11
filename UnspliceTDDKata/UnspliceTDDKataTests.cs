@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Linq;
+
+using NUnit.Framework;
 
 namespace UnspliceTDDKata
 {
@@ -6,13 +9,26 @@ namespace UnspliceTDDKata
     public class UnspliceTDDKataTests
     {
         [Test]
-        public void RemoveBackSlashes_ShouldRemoveBackSlashesFromString_ReturnStringWithoutBackSlashes()
+        public void RemoveBackSlashes_ShouldRemoveSingleBackSlashesFromString_ReturnStringWithoutBackSlashes()
         {
             // Arrange
             Unsplice unsplice = new Unsplice();
 
             // Act
-            var actual = unsplice.RemoveBackSlashes(@"abc\\\def");
+            var actual = unsplice.RemoveBackSlashes(@"abc\\\ndef");
+
+            // Assert
+            Assert.That(actual, Is.EqualTo("abcdef"));
+        }
+
+        [Test]
+        public void RemoveBackSlashes_ShouldRemoveDoubleBackSlashesFromString_ReturnStringWithoutBackSlashes()
+        {
+            // Arrange
+            Unsplice unsplice = new Unsplice();
+
+            // Act
+            var actual = unsplice.RemoveBackSlashes(@"abc\\\nde\\\nf");
 
             // Assert
             Assert.That(actual, Is.EqualTo("abcdef"));
@@ -23,7 +39,8 @@ namespace UnspliceTDDKata
     {
         public string RemoveBackSlashes(string s)
         {
-            return "abcdef";
+            var splittedArray = s.Split(new string[] { "\\\\\\n" }, StringSplitOptions.None);
+            return string.Join("",splittedArray);
         }
     }
 }
